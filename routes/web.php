@@ -18,8 +18,14 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/threads', 'ThreadsController@index');
-Route::get('/threads/{thread}', 'ThreadsController@show');
-Route::post('/threads/{thread}/replies','RepliesController@store');
+Route::post('/threads','ThreadsController@store');
+Route::get('/threads/create', 'ThreadsController@create');
+Route::get('/threads/{channel}/{thread}', 'ThreadsController@show');
+//Route::resource('threads','ThreadController');
+
+// route model binding 这里自动给RepliesController的store方法注入了id为thread的，Thread的实例。
+Route::post('/threads/{channel}/{thread}/replies','RepliesController@store');
 
 

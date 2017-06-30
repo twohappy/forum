@@ -10,7 +10,8 @@ class Thread extends Model
 
     public function path()
     {
-        return 'threads/' . $this->id;
+        return "/threads/{$this->channel->slug}/{$this->id}";
+//        return '/threads/' . $this->channel->slug. '/' . $this->id;
     }
 
     public function replies()
@@ -22,6 +23,11 @@ class Thread extends Model
     {
         // laravel 自动去threads里面寻找默认的creator_id字段，所以需要指定外键 ‘user_id’
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     public function addReply($reply)
