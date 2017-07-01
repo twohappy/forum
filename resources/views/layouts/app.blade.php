@@ -12,8 +12,20 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        body{
+            padding-bottom: 100px;
+        }
+        .level{
+            display: flex;
+            align-items: center;
+        }
+        .flex{
+            flex: 1;
+        }
+    </style>
 </head>
-<body style="padding-bottom: 100px">
+<body>
 <div id="app">
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
@@ -37,8 +49,17 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="/threads">All threads</a></li>
-
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Browse <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/threads">All Threads</a></li>
+                            @if(auth()->check())
+                                <li><a href="/threads?by={{ auth()->user()->name }}">My Threads</a></li>
+                            @endif
+                            <li><a href="/threads?popular=1">Popular threads</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="/threads/create">New Thread</a>
                     </li>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Filters\ThreadFilters;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -20,15 +21,17 @@ class ThreadsController extends Controller
      * Display a listing of the resource.
      *
      * @param Channel $channel
+     * @param ThreadFilters $filters
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadFilters $filters)
     {
-        if($channel->exists){
-            $threads = $channel->threads()->latest()->get();
-        }else{
-            $threads = Thread::latest()->get();
+        $threads = $this->getThread($channel, $filters);
+
+        if(request()->wantsJson()){
+            return $threads;
         }
+
         return view('threads.index',compact('threads'));
     }
 
@@ -74,7 +77,10 @@ class ThreadsController extends Controller
      */
     public function show($channel_id, Thread $thread)
     {
-        return view('threads.show',compact('thread'));
+        return view('threads.show',[
+            'thread' => $thread,
+            'replies' => $thread->replies()->paginate(20)
+        ]);
     }
 
     /**
@@ -110,4 +116,24 @@ class ThreadsController extends Controller
     {
         //
     }
+
+    /**
+     * @param Channel $channel
+     * @param ThreadFilters $filters
+     * @return mixed
+     */
+    public function getThread(Channel $channel, ThreadFilters $filters)
+    {
+        // 注意： 这个 latest 会给 query 增加 order。 也会导致之后再想给 query 增加orderBy ， 会失效。
+        // jeffery way 目前给出的方法是手动清除一下。 我们在threadFilters 的 popular里面有具体实现。
+        $threads = Thread::latest()->filter($filters);
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        $threads = $threads->get();
+        return $threads;
+    }
+
+
 }
