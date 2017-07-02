@@ -25,8 +25,9 @@ Route::get('/threads/create', 'ThreadsController@create');
 Route::get('/threads/{channel}','ThreadsController@index');
 Route::get('/threads/{channel}/{thread}', 'ThreadsController@show');
 //Route::resource('threads','ThreadController');
-
 // route model binding 这里自动给RepliesController的store方法注入了id为thread的，Thread的实例。
 Route::post('/threads/{channel}/{thread}/replies','RepliesController@store');
+
+Route::post('/replies/{reply}/favorites','FavoritesController@store');
 
 
