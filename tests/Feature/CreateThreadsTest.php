@@ -49,12 +49,14 @@ class CreateThreadsTest extends TestCase
         $this->publishThread(['title' => null])
             ->assertSessionHasErrors('title');
     }
+
     /** @test */
     function a_thread_requires_a_body()
     {
         $this->publishThread(['body' => null])
             ->assertSessionHasErrors('body');
     }
+
     /** @test */
     function a_thread_requires_a_valid_channel()
     {
@@ -65,24 +67,6 @@ class CreateThreadsTest extends TestCase
 
         $this->publishThread(['channel_id' => 999])
             ->assertSessionHasErrors('channel_id');
-    }
-
-    public function publishThread($overrides = [])
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $thread = make('App\Thread', $overrides);
-
-        $response = $this->post('/threads', $thread->toArray());
-
-        return $response;
-    }
-
-
-    /** @test */
-    function threads_may_only_be_deleted_by_those_who_have_permission()
-    {
-        //TODO:
     }
 
     /** @test */
@@ -107,6 +91,18 @@ class CreateThreadsTest extends TestCase
         $this->signIn();
         $this->delete($thread->path())->assertStatus(403);
 
+    }
+
+    // this is not a test but a helper function
+    public function publishThread($overrides = [])
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $thread = make('App\Thread', $overrides);
+
+        $response = $this->post('/threads', $thread->toArray());
+
+        return $response;
     }
 
 

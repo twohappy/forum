@@ -42,6 +42,8 @@ class ThreadPolicy
      */
     public function update(User $user, Thread $thread)
     {
+//        dd(gettype($thread->user_id));
+//        这里user_id是个string，所以在model里面把它cast成一个int
         return $thread->user_id === $user->id;
     }
 

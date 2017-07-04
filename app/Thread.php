@@ -6,8 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
+    use RecordsActivity;
+
     protected $guarded = [];
     protected $with = ['creator','channel'];
+    // ThreadPolicy 里面用了 ===，这个怎么会是string的。
+    protected $casts = [
+        'user_id' => 'int',
+    ];
+
     protected static function boot()
     {
         parent::boot();
