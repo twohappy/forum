@@ -9,7 +9,7 @@ class Thread extends Model
     use RecordsActivity;
 
     protected $guarded = [];
-    protected $with = ['creator','channel'];
+    protected $with = ['creator', 'channel'];
     // ThreadPolicy 里面用了 ===，这个怎么会是string的。
     protected $casts = [
         'user_id' => 'int',
@@ -24,8 +24,11 @@ class Thread extends Model
         });
 
 //        eloquent 的 events
-        static::deleting(function($thread){
-           $thread->replies()->delete();
+        static::deleting(function ($thread) {
+            $thread->replies->each->delete();
+//            $thread->replies->each(function ($reply) {
+//               $reply->delete();
+//            });
         });
     }
 
