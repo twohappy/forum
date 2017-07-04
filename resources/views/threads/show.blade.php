@@ -4,22 +4,35 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
+                {{-- thread start--}}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="#">{{$thread->creator->name}}</a> posted:
-                        {{$thread->title}}
+                        <div class="level">
+                            <span class="flex">
+                                <a href="{{route('profile',$thread->creator) }}">{{$thread->creator->name}}</a> posted:
+                                {{$thread->title}}
+                            </span>
+
+                            @can('update',$thread)
+                                <form method="POST" action="{{ $thread->path() }}">
+                                    {{ csrf_field() }}
+                                    {{ method_field('DELETE') }}
+                                    <button type="submit" class="btn btn-link">Delete Thread</button>
+                                </form>
+                            @endcan
+                        </div>
                     </div>
                     <div class="panel-body">
                         {{$thread->body}}
                     </div>
                 </div>
-
+                {{--thread end && replies start--}}
                 @foreach($replies as $reply)
                     @include('threads.reply')
                 @endforeach
 
                 {{ $replies->links() }}
-
+                {{--replies end--}}
                 {{--回复表单，应该只有登录用户可以看到--}}
                 @if (auth()->check() )
                     <form method="POST" action="{{ $thread->path() . '/replies' }}">
