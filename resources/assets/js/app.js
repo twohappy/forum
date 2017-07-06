@@ -8,6 +8,15 @@
 window.Vue = require('vue');
 require('./bootstrap');
 
+Vue.prototype.authorize = function(handler){
+    // Additional admin privileges
+
+    let user = Window.App.user
+
+    if(!user) return false
+
+    return handler(user)
+}
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -16,6 +25,7 @@ require('./bootstrap');
  */
 
 Vue.component('flash', require('./components/Flash.vue'));
+Vue.component('thread-view', require('./pages/Thread.vue'));
 
 const app = new Vue({
     el: '#app'

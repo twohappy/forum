@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Reply;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -26,11 +27,36 @@ class RepliesController extends Controller
             'body' => 'required'
         ]);
 
-        $thread->addReply([
+        $reply = $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()
         ]);
 
+        if(request()->expectsJson()){
+            return $reply->load('owner');
+        }
+
         return back()->with('flash','回复成功~');
+    }
+
+    public function update(Reply $reply)
+    {
+        $this->authorize('update',$reply);
+
+//        $reply->update(['body' => request('body')]);
+        $reply->update(request(['body']));
+    }
+
+    public function destroy(Reply $reply)
+    {
+        $this->authorize('update',$reply);
+
+        $reply->delete();
+
+        if(request()->expectsJson()){
+            return response(['status' => 'Reply deleted!']);
+        }
+
+        return back();
     }
 }
