@@ -28,9 +28,12 @@ Route::delete('/threads/{channel}/{thread}', 'ThreadsController@destroy');
 
 //Route::resource('threads','ThreadController');
 // route model binding 这里自动给RepliesController的store方法注入了id为thread的，Thread的实例。
+Route::get('/threads/{channel}/{thread}/replies','RepliesController@index');
 Route::post('/threads/{channel}/{thread}/replies','RepliesController@store');
 Route::delete('/replies/{reply}','RepliesController@destroy');
 Route::patch('/replies/{reply}','RepliesController@update');
+Route::post('/threads/{channel}/{thread}/subscriptions','ThreadSubscriptionsController@store')->middleware('auth');
+
 Route::post('/replies/{reply}/favorites','FavoritesController@store');
 Route::delete('/replies/{reply}/favorites','FavoritesController@destroy');
 
